@@ -567,7 +567,7 @@ void CodeGenerator::GenDescriptorMetadata(
                  "prefix", JsFullName(message->file(), message->full_name()));
   printer->Indent();
   printer->Print("// The descriptor is created lazily when we instantiate a new instance.\n");
-  printer->Print("var descriptorObj = {");
+  printer->Print("var descriptorObj = {\n");
   printer->Indent();
   printer->Print("0: {\n");
   printer->Indent();
