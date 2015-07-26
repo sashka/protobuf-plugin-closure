@@ -559,9 +559,15 @@ void CodeGenerator::GenDescriptorMetadata(
       google::protobuf::io::Printer *printer) {
   printer->Print("\n"
                  "\n"
-                 "goog.proto2.Message.set$$Metadata($name$, {\n",
-                 "name", JsFullName(message->file(),
-                                    message->full_name()));
+                 " /** @override */\n"
+                 "$prefix$.prototype.getDescriptor = function() {\n",
+                 "prefix", JsFullName(message->file(), message->full_name()));
+  printer->Indent();
+  printer->Print("if (!$prefix$.descriptor_) {\n",
+                 "prefix", JsFullName(message->file(), message->full_name()));
+  printer->Indent();
+  printer->Print("// The descriptor is created lazily when we instantiate a new instance.\n");
+  printer->Print("var descriptorObj = {");
   printer->Indent();
   printer->Print("0: {\n");
   printer->Indent();
@@ -593,7 +599,15 @@ void CodeGenerator::GenDescriptorMetadata(
     }
   }
   printer->Outdent();
-  printer->Print("});\n");
+  printer->Print("};\n");
+  printer->Print("$prefix$.descriptor_ = goog.proto2.Message.createDescriptor($prefix$, descriptorObj);\n",
+                 "prefix", JsFullName(message->file(), message->full_name()));
+  printer->Outdent();
+  printer->Print("}\n");
+  printer->Print("return $prefix$.descriptor_;\n",
+                 "prefix", JsFullName(message->file(), message->full_name()));
+  printer->Outdent();
+  printer->Print("};\n");
 
   // nested messages (recursively process)
   for (int i = 0; i < message->nested_type_count(); ++i) {
