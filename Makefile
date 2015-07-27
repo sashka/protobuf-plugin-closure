@@ -13,7 +13,7 @@ INCLUDE=$(SPREFIX)/include/
 LIB=$(SPREFIX)/lib/
 PROTOC=protoc
 
-all: js/javascript_package.pb.cc js/int64_encoding.pb.cc protoc-gen-js protoc-gen-ccjs
+all: js/javascript_package.pb.cc js/int64_encoding.pb.cc protoc-gen-js
 
 # Note that building the cc files also builds the h files .
 # We needed a specific file name in order to avert unnecesary recompiles .
@@ -52,20 +52,6 @@ endif
     -lprotobuf \
     -lprotoc \
     -o ./protoc-gen-js \
-    -lpthread
-
-protoc-gen-ccjs: js/javascript_package.pb.cc js/int64_encoding.pb.cc
-ifeq ($(VERBOSE),0)
-	@echo "    g++ protoc-gen-ccjs" ;
-endif
-	$(QUIET) g++ -I $(INCLUDE) \
-    -I . \
-    ./ccjs/code_generator.cc \
-    ./ccjs/protoc_gen_ccjs.cc \
-    ./js/int64_encoding.pb.cc \
-	-lprotobuf \
-	-lprotoc \
-    -o ./protoc-gen-ccjs \
     -lpthread
 
 clean:

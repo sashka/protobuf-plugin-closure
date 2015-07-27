@@ -1,6 +1,7 @@
 # Copyright (c) 2010-2011 SameGoal LLC.
 # All Rights Reserved.
 # Author: Andy Hochhaus <ahochhaus@samegoal.com>
+# Updated by: Alexander Saltanov <asd@mokote.com>
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,68 +19,9 @@ The protobuf-plugin-closure project contains two protoc plugins that can be
 used individually or together. The plugin that lives in the "js" directory
 generates *.pb.js files for use with the closure-library proto2 package [1].
 The "js" plugin is useful to access protocol buffers from javascript.
-Additionally, the "ccjs" directory contains a plugin that (de)serializes
-to/from the json based protocol buffer encodings assumed by closure-library.
-You can use this plugin to share protocol buffers between a C++ based server
-and a javascript client.
 
-The supplied protobuf.gyp file is used with the GYP build system [2] to compile
-the plugins and supporting library. Note that this file is written to assume
-the protocol buffer source code is also compiled using gyp. See the chromium
-source code for an example [3].
+Use Makefile to build it.
 
-If you do not build with GYP, you can also compile manually from the command
-line. In all steps, make sure you modify the paths to match your environment.
-
-The "js" compiler plugin adds javascript_package and jstype options using
-extensions. These options are defined in javascript_package.proto and
-int64_encoding.proto. These *.proto files must be run through the protocol
-compiler prior to compiling this plugin. To do so, run protoc as follows:
-
-$ ./build/third_party/protobuf/bin/protoc \
-    -I . \
-    -I third_party/protobuf/src/ \
-    --cpp_out=. \
-    javascript_package.proto
-
-Next compile the plugin(s) as follows:
-
-$ g++ -I ./build/third_party/protobuf/include/ \
-    -I . \
-    ./protobuf/src/google/protobuf/compiler/plugin.pb.cc \
-    ./protobuf/src/google/protobuf/compiler/plugin.cc \
-    ./js/code_generator.cc \
-    ./js/protoc_gen_js.cc \
-    ./js/javascript_package.pb.cc \
-    ./js/int64_encoding.pb.cc \
-    -l:./build/third_party/protobuf/lib/libprotobuf.a \
-    -l:./build/third_party/protobuf/lib/libprotoc.a \
-    -o ./build/protobuf/js/protoc-gen-js \
-    -lpthread
-
-$ g++ -I ./build/third_party/protobuf/include/ \
-    -I . \
-    ./protobuf/src/google/protobuf/compiler/plugin.pb.cc \
-    ./protobuf/src/google/protobuf/compiler/plugin.cc \
-    ./ccjs/code_generator.cc \
-    ./ccjs/protoc_gen_ccjs.cc \
-    ./js/int64_encoding.pb.cc \
-    -l:./build/third_party/protobuf/lib/libprotobuf.a \
-    -l:./build/third_party/protobuf/lib/libprotoc.a \
-    -o ./build/protobuf/ccjs/protoc-gen-ccjs \
-    -lpthread
-
-Finally, to run the protoc compiler with the plugin(s):
-
-$ ./build/third_party/protobuf/bin/protoc \
-    --plugin=build/protobuf/js/protoc-gen-js \
-    --plugin=build/protobuf/ccjs/protoc-gen-ccjs \
-    -I . \
-    -I build/third_party/protobuf/src/ \
-    --js_out=/tmp/foo/ \
-    --cpp_out=/tmp/foo/ \
-    --ccjs_out=/tmp/foo/ \
-    test.proto
 
 Notes:
 
