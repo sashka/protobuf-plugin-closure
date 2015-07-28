@@ -511,7 +511,17 @@ void CodeGenerator::GenDescriptorMetadata(const google::protobuf::Descriptor *me
     printer->Print("return $prefix$.descriptor_;\n",
                    "prefix", JsFullName(message->file(), message->full_name()));
     printer->Outdent();
-    printer->Print("};\n");
+    printer->Print("};\n"
+                   "\n"
+                   "// Export getDescriptor to prevent closure-compiler warnings like this:\n"
+                   "// WARNING - Property getDescriptor never defined on $prefix$\n"
+                   "// TODO: Get rid of this when it becomes clear how.\n"
+                   "$prefix$['ctor'] = $prefix$;\n"
+                   "$prefix$['ctor'].getDescriptor = $prefix$.prototype.getDescriptor;\n"
+                   "\n"
+                   "\n"
+                   ,
+                   "prefix", JsFullName(message->file(), message->full_name()));
 
     // nested messages (recursively process)
     for (int i = 0; i < message->nested_type_count(); ++i) {

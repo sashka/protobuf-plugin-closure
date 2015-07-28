@@ -38,7 +38,7 @@ endif
     --cpp_out=js \
     js/int64_encoding.proto
 
-protoc-gen-js: js/javascript_package.pb.cc js/int64_encoding.pb.cc
+protoc-gen-js: js/javascript_package.pb.cc js/int64_encoding.pb.cc js/code_generator.cc
 ifeq ($(VERBOSE),0)
 	@echo "    g++ protoc-gen-js" ;
 endif
@@ -67,7 +67,3 @@ ifeq ($(VERBOSE),0)
 	@echo "    RM protoc-gen-js" ;
 endif
 	$(QUIET) if [ -e protoc-gen-js ] ; then rm protoc-gen-js ; fi ;
-ifeq ($(VERBOSE),0)
-	@echo "    RM protoc-gen-ccjs" ;
-endif
-	$(QUIET) if [ -e protoc-gen-ccjs ] ; then rm protoc-gen-ccjs ; fi ;
